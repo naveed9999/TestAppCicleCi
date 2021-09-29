@@ -4,7 +4,25 @@ version: 2.1 # to enable orb usage, you must be using circleci 2.1
 # Android orb docs are available here:  https://circleci.com/developer/orbs/orb/circleci/android
 orbs:
   android: circleci/android@1.0
+  gcp-cli: circleci/gcp-cli@2.2.0
+  sonarqube: clicklogiq/sonarqube@1.0.1
+
+jobs:
+  build:
+    docker:
+      - image: 'circleci/openjdk:11-jdk'
+    steps:
+      - checkout
+      - run:
+          name: Analyze on SonarCloud
+          command: gradle build sonarqube"
+
 workflows:
+  main:
+    jobs:
+      - build:
+          context: SonarCloud
+
   test:
     jobs:
       # This job uses the Android machine image by default
